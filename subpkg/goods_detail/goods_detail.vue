@@ -37,6 +37,7 @@
 </template>
 
 <script>
+	import {mapGetters} from "vuex"
 	export default {
 		data() {
 			return {
@@ -49,7 +50,7 @@
 				}, {
 					icon: 'cart',
 					text: '购物车',
-					info: 2
+					info:0
 				}],
 				buttonGroup: [{
 				  text: '加入购物车',
@@ -66,6 +67,19 @@
 		onLoad(options){
 			
 			this.getGoodsDetail(options.goods_id)
+
+		},
+		computed:{
+			...mapGetters("moduleCart",["totalNum"])
+		},
+		watch:{
+			totalNum:{
+			    immediate: true,
+				handler(newVal){
+					let findResult = this.options.find(item=>item.text==='购物车')
+					findResult.info = newVal
+				}
+			}
 		},
 		methods: {
 			async getGoodsDetail(goods_id) {
@@ -89,8 +103,21 @@
 			}
 		  },
 		  buttonClick (e) {
-			console.log(e)
-			
+			console.log(e);
+			if(e.content.text === "加入购物车"){
+				//构建一个参数传递
+				const goods = {
+					goods_id:this.goods_info.goods_id,
+					goods_name:this.goods_info.goods_name,
+					goods_price:this.goods_info.goods_price,
+					goods_count:1,
+					goods_small_logo:this.goods_info.goods_small_logo,
+					goods_state:true
+				}
+				//仓库购物车数量+1
+				this.$store.commit("moduleCart/addToCart",goods)
+
+			}
 		  }
 		},
 	}
