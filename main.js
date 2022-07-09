@@ -14,6 +14,12 @@ $http.beforeRequest = function (options) {
   uni.showLoading({
   	title:"数据加载中..."
   })
+  //判断当前请求的是否是有权限的接口（请求的地址是否包含my）
+  if(options.url.indexOf('/my/')!==-1){
+	  options.header = {
+		  Authorization:store.state.moduleUser.token
+	  }
+  }
 }
 //响应拦截器
 $http.afterRequest = function () {

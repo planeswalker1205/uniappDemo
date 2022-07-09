@@ -43,7 +43,13 @@ export default {
 		removeGoodsById(state,goods_id){
 			state.cart = state.cart.filter(x=>x.goods_id!==goods_id)
 			this.commit('moduleCart/saveToStorage')
+		},
+		//已支付成功的商品
+		successPayGoods(state){
+			state.cart = state.cart.filter(x=>!x.goods_state)
+			this.commit('moduleCart/saveToStorage')
 		}
+		
 	},
 	getters:{
 		totalNum(state){
@@ -51,6 +57,7 @@ export default {
 				return curr+item.goods_count
 			},0)
 		},
+		//選中數量
 		checkedCount(state){
 			return state.cart.filter(x=>x.goods_state).reduce((curr,item)=>curr+=item.goods_count,0)
 		},
